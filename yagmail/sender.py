@@ -22,6 +22,7 @@ class SMTP:
     def __init__(
         self,
         user=None,
+        username=None,
         password=None,
         host="smtp.gmail.com",
         port=None,
@@ -61,6 +62,7 @@ class SMTP:
         self.unsent = []
         self.num_mail_sent = 0
         self.oauth2_file = oauth2_file
+        self.username = username if username is not None else self.user
         self.credentials = password if oauth2_file is None else oauth2_info
 
     def __enter__(self):
@@ -221,8 +223,8 @@ class SMTP:
             self.smtp.ehlo()
         self.is_closed = False
         if not self.smtp_skip_login:
-            password = self.handle_password(self.user, password)
-            self.smtp.login(self.user, password)
+            password = self.handle_password(self.username, password)
+            self.smtp.login(self.username, password)
         self.log.info("Connected to SMTP @ %s:%s as %s", self.host, self.port, self.user)
 
     @staticmethod
